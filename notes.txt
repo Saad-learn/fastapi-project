@@ -1,0 +1,4 @@
+"""
+    Login using email + password
+    Returns JWT access token
+    """
