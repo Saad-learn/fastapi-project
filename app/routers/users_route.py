@@ -16,17 +16,14 @@ def create_user(
     current_user=Depends(get_current_user)
 ):
     admin_only(current_user)
-
     if db.query(User).filter(User.email == data.email).first():
         raise HTTPException(status_code=400, detail="Email already exists")
-
     user = User(
         email=data.email,
         password=pwd_context.hash(data.password),
         role=data.role,
         organization_id=current_user.organization_id
     )
-
     db.add(user)
     db.commit()
     db.refresh(user)
@@ -52,14 +49,11 @@ def update_role(
     current_user=Depends(get_current_user)
 ):
     admin_only(current_user)
-
     target = db.get(User, user_id)
     if not target:
         raise HTTPException(status_code=404, detail="User not found")
-
     if target.id == current_user.id:
         raise HTTPException(status_code=400, detail="Cannot change own role")
-
     target.role = data.role
     db.commit()
     return {"detail": "Role updated"}
